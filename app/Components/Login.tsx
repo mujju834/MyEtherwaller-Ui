@@ -1,14 +1,18 @@
 import React, { useState } from 'react';
 
-const Login = ({ onLogin }) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [isRegistering, setIsRegistering] = useState(false); // State to track form type
-  const [successMessage, setSuccessMessage] = useState(''); // State to hold success message
+interface LoginProps {
+  onLogin: (token: string, user: { id: string; email: string }) => void;
+}
+
+const Login: React.FC<LoginProps> = ({ onLogin }) => {
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [error, setError] = useState<string>('');
+  const [isRegistering, setIsRegistering] = useState<boolean>(false);
+  const [successMessage, setSuccessMessage] = useState<string>('');
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
-  const handleLogin = async (e) => {
+  const handleLogin = async (e:any) => {
     e.preventDefault();
     try {
       const response = await fetch(`${apiUrl}/auth/login`, {
@@ -30,7 +34,7 @@ const Login = ({ onLogin }) => {
     }
   };
 
-  const handleRegister = async (e) => {
+  const handleRegister = async (e: any) => {
     e.preventDefault();
     try {
       const response = await fetch(`${apiUrl}/auth/register`, {
