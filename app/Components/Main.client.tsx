@@ -10,9 +10,14 @@ const LoginComponent = dynamic(() => import('./Login'), {
   suspense: true,
 });
 
+interface User {
+  id: string;
+  email: string;
+}
+
 export default function Home() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [user, setUser] = useState(null);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [user, setUser] = useState<User | null>(null);
 
   // Check if the user is already logged in (based on localStorage)
   useEffect(() => {
@@ -24,7 +29,7 @@ export default function Home() {
     }
   }, []);
 
-  const handleLogin = (token, user) => {
+  const handleLogin = (token: string, user: User) => {
     setIsLoggedIn(true);
     setUser(user);
     localStorage.setItem('token', token);
