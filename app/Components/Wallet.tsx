@@ -12,17 +12,16 @@ const MainClient: React.FC = () => {
   const [loadingImport, setLoadingImport] = useState<boolean>(false);
   const [loadingTransaction, setLoadingTransaction] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
-  const [transactionError, setTransactionError] = useState<string>(''); // Separate state for transaction errors
-  const [showLogoutModal, setShowLogoutModal] = useState<boolean>(false); // State to manage logout modal
-  const [wallets, setWallets] = useState<any[]>([]); // State to hold all user's wallets
-  const [selectedWallet, setSelectedWallet] = useState<string>(''); // State to hold selected wallet address
-  const [importMode, setImportMode] = useState<boolean>(false); // State to switch to import mode
-  const [showTransactionForm, setShowTransactionForm] = useState<boolean>(false); // State to toggle transaction form
+  const [transactionError, setTransactionError] = useState<string>(''); 
+  const [showLogoutModal, setShowLogoutModal] = useState<boolean>(false);
+  const [wallets, setWallets] = useState<any[]>([]); 
+  const [selectedWallet, setSelectedWallet] = useState<string>(''); 
+  const [importMode, setImportMode] = useState<boolean>(false); 
+  const [showTransactionForm, setShowTransactionForm] = useState<boolean>(false); 
 
   const provider = new JsonRpcProvider(process.env.NEXT_PUBLIC_INFURA_URL);
 
   useEffect(() => {
-    // Fetch wallets from backend when the component loads
     const fetchWallets = async () => {
       try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/wallets`, {
@@ -36,7 +35,7 @@ const MainClient: React.FC = () => {
           if (data.wallets.length > 0) {
             selectWallet(data.wallets[0].address);
           } else {
-            setImportMode(true); // If no wallets, switch to import mode
+            setImportMode(true); 
           }
         } else {
           console.error('Failed to fetch wallets:', data.message);
@@ -55,7 +54,7 @@ const MainClient: React.FC = () => {
       setWalletAddress('');
       setBalance('');
       setPrivateKey('');
-      setShowTransactionForm(false); // Reset transaction form visibility
+      setShowTransactionForm(false); 
       return;
     }
 
@@ -64,13 +63,13 @@ const MainClient: React.FC = () => {
       setSelectedWallet(address);
       const wallet = wallets.find((w) => w.address === address);
       if (wallet) {
-        setPrivateKey(wallet.privateKey); // Set private key if available
+        setPrivateKey(wallet.privateKey); 
         const balanceInWei = await provider.getBalance(address);
         const balanceInEther = formatEther(balanceInWei);
         setWalletAddress(address);
         setBalance(balanceInEther);
         setError('');
-        setShowTransactionForm(false); // Hide transaction form by default
+        setShowTransactionForm(false); 
       }
     } catch (error) {
       console.error('Error selecting wallet:', error);
@@ -96,7 +95,6 @@ const MainClient: React.FC = () => {
         setBalance(balanceInEther);
         setError('');
 
-        // Save wallet to the backend
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/wallets`, {
           method: 'POST',
           headers: {
@@ -110,7 +108,7 @@ const MainClient: React.FC = () => {
         if (response.ok) {
           setWallets((prevWallets) => [...prevWallets, { address: wallet.address, privateKey }]);
           setSelectedWallet(wallet.address);
-          setImportMode(false); // Exit import mode after successful import
+          setImportMode(false); 
         } else {
           setError(data.message);
         }
@@ -128,7 +126,7 @@ const MainClient: React.FC = () => {
     e.preventDefault();
     setLoadingTransaction(true);
     setTransactionDetails(null);
-    setTransactionError('');  // Reset any previous transaction error
+    setTransactionError('');  
 
     try {
       if (!recipient || !amount) {
@@ -145,7 +143,6 @@ const MainClient: React.FC = () => {
 
       const receipt = await tx.wait();
 
-      // Update balance after the transaction is confirmed
       const balanceInWei = await provider.getBalance(wallet.address);
       const balanceInEther = formatEther(balanceInWei);
       setBalance(balanceInEther);
@@ -161,9 +158,9 @@ const MainClient: React.FC = () => {
         status: receipt.status === 1 ? 'Success' : 'Failed',
       });
       setTransactionError('');
-      setShowTransactionForm(false); // Hide transaction form after sending
+      setShowTransactionForm(false); 
     } catch (err: any) {
-      setTransactionError(err.message);  // Set the transaction error message
+      setTransactionError(err.message);  
       setTransactionDetails(null);
     } finally {
       setLoadingTransaction(false);
@@ -206,7 +203,7 @@ const MainClient: React.FC = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
-      <div className="bg-white rounded-lg shadow-lg p-8 max-w-lg w-full relative min-h-[200px]">
+      <div className="bg-white rounded-lg shadow-lg p-8 max-w-lg w-full relative min-h-[200px] sm:min-h-[300px]">
         <div className="flex items-center justify-between mb-2">
           <FiRefreshCw
             onClick={resetForm}
@@ -299,14 +296,14 @@ const MainClient: React.FC = () => {
 
             {transactionDetails && (
               <div className="text-center">
-                <p className="mb-2 break-words"><strong>Transaction Hash:</strong> {transactionDetails.hash}</p>
-                <p className="mb-2 break-words"><strong>From:</strong> {transactionDetails.from}</p>
-                <p className="mb-2 break-words"><strong>To:</strong> {transactionDetails.to}</p>
-                <p className="mb-2 break-words"><strong>Value:</strong> {transactionDetails.value} ETH</p>
-                <p className="mb-2 break-words"><strong>Gas Used:</strong> {transactionDetails.gasUsed}</p>
-                <p className="mb-2 break-words"><strong>Block Number:</strong> {transactionDetails.blockNumber}</p>
-                <p className="mb-2 break-words"><strong>Confirmations:</strong> {transactionDetails.confirmations}</p>
-                <p className="mb-2 break-words"><strong>Status:</strong> {transactionDetails.status}</p>
+                <p className="mb-2 break-words overflow-hidden text-sm"><strong>Transaction Hash:</strong> {transactionDetails.hash}</p>
+                <p className="mb-2 break-words overflow-hidden text-sm"><strong>From:</strong> {transactionDetails.from}</p>
+                <p className="mb-2 break-words overflow-hidden text-sm"><strong>To:</strong> {transactionDetails.to}</p>
+                <p className="mb-2 break-words overflow-hidden text-sm"><strong>Value:</strong> {transactionDetails.value} ETH</p>
+                <p className="mb-2 break-words overflow-hidden text-sm"><strong>Gas Used:</strong> {transactionDetails.gasUsed}</p>
+                <p className="mb-2 break-words overflow-hidden text-sm"><strong>Block Number:</strong> {transactionDetails.blockNumber}</p>
+                <p className="mb-2 break-words overflow-hidden text-sm"><strong>Confirmations:</strong> {transactionDetails.confirmations}</p>
+                <p className="mb-2 break-words overflow-hidden text-sm"><strong>Status:</strong> {transactionDetails.status}</p>
               </div>
             )}
           </>
@@ -341,7 +338,6 @@ const MainClient: React.FC = () => {
 
         {error && <p className="text-red-500 mb-4">{error}</p>}
 
-        {/* Logout Confirmation Modal */}
         {showLogoutModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
             <div className="bg-white rounded-lg p-8 shadow-lg max-w-sm w-full">
