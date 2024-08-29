@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
 
+interface Error {
+  msg: string;
+}
+
 interface LoginProps {
   onLogin: (token: string, user: { id: string; email: string }) => void;
 }
@@ -51,7 +55,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
         }, 2000); // Simulate a delay for the animation
       } else {
         console.error('Error:', data);
-        setError(data.errors ? data.errors.map(err => err.msg).join(', ') : 'Registration failed');
+        setError(data.errors ? data.errors.map((err: Error) => err.msg).join(', ') : 'Registration failed');
       }
     } catch (err) {
       console.error('Network error:', err);
