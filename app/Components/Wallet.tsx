@@ -234,6 +234,9 @@ const MainClient: React.FC = () => {
           </button>
         </div>
 
+        <p className="text-center text-sm text-gray-500 mb-4">This Network only works for the Holesky Testnet.</p>
+
+
         <div className="mb-4">
           <label className="block text-gray-700">Select Wallet:</label>
           <select
