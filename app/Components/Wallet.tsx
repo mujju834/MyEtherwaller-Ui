@@ -131,44 +131,55 @@ const MainClient: React.FC = () => {
     setTransactionError('');  // Reset any previous transaction error
 
     try {
-      if (!recipient || !amount) {
-        throw new Error('Recipient address and amount are required');
-      }
+        if (!recipient || !amount) {
+            throw new Error('Recipient address and amount are required');
+        }
 
-      const wallet = new Wallet(privateKey, provider);
-      const amountInWei = parseEther(amount);
+        const wallet = new Wallet(privateKey, provider);
+        const amountInWei = parseEther(amount);
 
-      const tx = await wallet.sendTransaction({
-        to: recipient,
-        value: amountInWei,
-      });
+        const tx = await wallet.sendTransaction({
+            to: recipient,
+            value: amountInWei,
+        });
 
-      const receipt = await tx.wait();
+        console.log('Transaction sent:', tx);
 
-      // Update balance after the transaction is confirmed
-      const balanceInWei = await provider.getBalance(wallet.address);
-      const balanceInEther = formatEther(balanceInWei);
-      setBalance(balanceInEther);
+        // Wait for the transaction to be mined
+        const receipt = await tx.wait();
 
-      setTransactionDetails({
-        hash: tx.hash,
-        from: tx.from,
-        to: tx.to,
-        value: formatEther(tx.value),
-        gasUsed: receipt.gasUsed.toString(),
-        blockNumber: receipt.blockNumber,
-        confirmations: receipt.confirmations,
-        status: receipt.status === 1 ? 'Success' : 'Failed',
-      });
-      setTransactionError('');
-      setShowTransactionForm(false); // Hide transaction form after sending
+        if (!receipt) {
+            throw new Error('Transaction receipt not found');
+        }
+
+        console.log('Transaction mined, receipt:', receipt);
+
+        // Update balance after the transaction is confirmed
+        const balanceInWei = await provider.getBalance(wallet.address);
+        const balanceInEther = formatEther(balanceInWei);
+        setBalance(balanceInEther);
+
+        setTransactionDetails({
+            hash: tx.hash,
+            from: tx.from,
+            to: tx.to,
+            value: formatEther(tx.value),
+            gasUsed: receipt.gasUsed?.toString(),
+            blockNumber: receipt.blockNumber,
+            confirmations: receipt.confirmations,
+            status: receipt.status === 1 ? 'Success' : 'Failed',
+        });
+        setTransactionError('');
+        setShowTransactionForm(false); // Hide transaction form after sending
     } catch (err: any) {
-      setTransactionError(err.message);  // Set the transaction error message
-      setTransactionDetails(null);
+        console.error('Error sending transaction:', err);
+        setTransactionError(err.message || 'An unexpected error occurred');  // Set the transaction error message
+        setTransactionDetails(null);
     } finally {
-      setLoadingTransaction(false);
+        setLoadingTransaction(false);
     }
-  };
+};
+
 
   const handleLogout = () => {
     setPrivateKey('');
