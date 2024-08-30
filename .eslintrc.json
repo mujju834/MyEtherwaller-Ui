@@ -1,9 +1,12 @@
 {
   "extends": [
-    "next/core-web-vitals"
+    "next/core-web-vitals",
+    "next/typescript",
+    "prettier"
   ],
   "rules": {
-    "@typescript-eslint/ban-ts-comment": "off"
+    "react/no-unescaped-entities": "off",
+    "@next/next/no-page-custom-font": "off",
+    "@typescript-eslint/ban-ts-comment": "off" // Disable the rule if it's not needed
   }
- 
 }
