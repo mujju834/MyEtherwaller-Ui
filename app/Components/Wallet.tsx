@@ -85,7 +85,7 @@ const MainClient: React.FC = () => {
     setTimeout(async () => {
       try {
         if (!privateKey || privateKey.length !== 64) {
-          throw new Error('Invalid Private Key');
+          throw new Error('Invalid Private-Key');
         }
 
         const wallet = new Wallet(privateKey, provider);
